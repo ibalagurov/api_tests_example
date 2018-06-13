@@ -8,7 +8,7 @@ import config
 def get():
     session = Session()
     print('Create session')
-    session.headers.update({'Authorization': f'OAuth {config.auth.TOKEN}'})
+    session.headers.update(Authorization=f'OAuth {config.auth.TOKEN}')
     return session
 
 
