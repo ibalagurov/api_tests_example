@@ -5,15 +5,15 @@ import config
 
 
 @lru_cache()
-def get():
+def get(by_user):
     session = Session()
-    print('Create session')
-    session.headers.update(Authorization=f'OAuth {config.auth.TOKEN}')
+    if by_user == 'authorized':
+        session.headers.update(Authorization=f'OAuth {config.auth.TOKEN}')
     return session
 
 
-def send_request(request):
-    session = get()
+def send_request(request, by_user):
+    session = get(by_user=by_user)
     prepped = session.prepare_request(request)
     if config.test_run.DEBUG:
         print(f"""
