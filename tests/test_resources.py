@@ -4,13 +4,15 @@ from testlib import check
 from waiting import wait
 
 
-@pytest.mark.parametrize('link, file_type, mime_type, file_name', [
-    (
-        'https://habrastorage.org/getpro/habr/post_images/ac4/d9f/2a9/ac4d9f2a99bca3d3342b7f440f62ba3d.jpg',
-        'file', 'image/jpeg', 'test.jpg'
-    )
+_TEST_DATA_URL = 'https://github.com/ibalagurov/api_tests_example/blob/master/test_data'
+
+
+@pytest.mark.parametrize('file_name, link, mime_type', [
+    ('test.jpg', f'{_TEST_DATA_URL}/test_jpg.jpg', 'image/jpeg'),
+    ('test.json', f'{_TEST_DATA_URL}/test_json.json', 'application/octet-stream'),
+    ('test.txt', f'{_TEST_DATA_URL}/test_txt.txt', 'text/plain'),
 ])
-def test_upload(temp_folder, link, file_type, mime_type, file_name):
+def test_upload(temp_folder, file_name, link, mime_type):
     """ Temporary folder is created, upload in it image, operation should be successful, file should be available and
         have expected name and mime type """
     file_path = f'{temp_folder}/{file_name}'
@@ -25,6 +27,5 @@ def test_upload(temp_folder, link, file_type, mime_type, file_name):
 
     response = resources.helper.get_resources_response(params={'path': file_path})
     check.response_has_status_code(response, 200)
-    check.response_has_field_with_value(response, "type", file_type)
     check.response_has_field_with_value(response, "mime_type", mime_type)
     check.response_has_field_with_value(response, "name", file_name)
