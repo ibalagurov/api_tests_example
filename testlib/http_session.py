@@ -16,19 +16,12 @@ def send_request(request, by_user):
     session = get(by_user=by_user)
     prepped = session.prepare_request(request)
     if config.test_run.DEBUG:
-        print(f"""
-            send request:
-                url: {prepped.url}
-                method: {prepped.method}
-                headers: {prepped.headers}
-                body: {prepped.body}""")
+        url, method, headers, body = prepped.url, prepped.method, prepped.headers, prepped.body
+        print(f"\n\nsend request:\n url: {url}\n method: {method}\n headers: {headers}\n body: {body}")
 
     response = session.send(request=prepped, timeout=config.test_run.API_TIMEOUT, verify=config.routing.VERIFY_SSL)
 
     if config.test_run.DEBUG:
-        print(f"""
-            get response:
-                code: {response.status_code} {response.reason}
-                content: {response.text}""")
+        print(f"get response:\n code: {response.status_code} {response.reason}\n content: {response.text}")
 
     return response
