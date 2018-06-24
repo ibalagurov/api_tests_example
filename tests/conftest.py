@@ -1,5 +1,5 @@
 import pytest
-from testlib.resources import helper
+from testlib import helper
 import uuid
 
 
