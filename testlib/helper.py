@@ -12,6 +12,14 @@ def check_and_return_json(func):
     return wrapper
 
 
+def send_request_and_get_response(func):
+    def wrapper(by_user='authorized', *args, **kwargs):
+        request = func(*args, **kwargs)
+        response = http_session.send_request(request=request, by_user=by_user)
+        return response
+    return wrapper
+
+
 DISK_URL = BASE_URL + '/disk'
 DISK_OPERATIONS_URL = BASE_URL + '/disk/operations'
 DISK_RESOURCES_URL = BASE_URL + '/disk/resources'
@@ -20,20 +28,18 @@ DISK_RESOURCE_PUBLISH_URL = BASE_URL + '/disk/resources/publish'
 
 
 # DISK
-def custom_disk_response(method, by_user='authorized', **kwargs):
-    request = Request(method=method, url=DISK_URL, **kwargs)
-    response = http_session.send_request(request=request, by_user=by_user)
-    return response
+@send_request_and_get_response
+def custom_disk_response(method, **kwargs):
+    return Request(method=method, url=DISK_URL, **kwargs)
 
 
 get_disk_info_response = partial(custom_disk_response, method='get')
 
 
 # OPERATIONS
-def custom_operations_response(method, operation_id, by_user='authorized', **kwargs):
-    request = Request(method=method, url=f'{DISK_OPERATIONS_URL}/{operation_id}', **kwargs)
-    response = http_session.send_request(request=request, by_user=by_user)
-    return response
+@send_request_and_get_response
+def custom_operations_response(method, operation_id, **kwargs):
+    return Request(method=method, url=f'{DISK_OPERATIONS_URL}/{operation_id}', **kwargs)
 
 
 @check_and_return_json
@@ -47,10 +53,9 @@ def operation_status(operation_id):
 
 # RESOURCES
 # # Disk
-def custom_resources_response(method, by_user='authorized', **kwargs):
-    request = Request(method=method, url=DISK_RESOURCES_URL, **kwargs)
-    response = http_session.send_request(request=request, by_user=by_user)
-    return response
+@send_request_and_get_response
+def custom_resources_response(method, **kwargs):
+    return Request(method=method, url=DISK_RESOURCES_URL, **kwargs)
 
 
 get_resources_response = partial(custom_resources_response, method='get')
@@ -74,10 +79,9 @@ def delete_resources(*args, **kwargs):
 
 
 # # Upload
-def custom_upload_resource_response(method, by_user='authorized', **kwargs):
-    request = Request(method=method, url=DISK_RESOURCE_UPLOAD_URL, **kwargs)
-    response = http_session.send_request(request=request, by_user=by_user)
-    return response
+@send_request_and_get_response
+def custom_upload_resource_response(method, **kwargs):
+    return Request(method=method, url=DISK_RESOURCE_UPLOAD_URL, **kwargs)
 
 
 get_upload_resource_response = partial(custom_upload_resource_response, method='get')
@@ -85,4 +89,6 @@ post_upload_resource_response = partial(custom_upload_resource_response, method=
 
 
 # # Publish
-disk_resource_publish = partial(Request, url=DISK_RESOURCE_PUBLISH_URL)
+@send_request_and_get_response
+def custom_publish_resource_response(method, **kwargs):
+    return Request(method=method, url=DISK_RESOURCE_PUBLISH_URL, **kwargs)
