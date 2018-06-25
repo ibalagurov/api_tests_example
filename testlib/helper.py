@@ -1,6 +1,7 @@
 from requests import Request
 from functools import partial
 from . import http_session
+from waiting import wait
 from config.routing import BASE_URL
 
 
@@ -9,6 +10,14 @@ def check_and_return_json(func):
         response = func(*args, **kwargs)
         response.raise_for_status()
         return response.json()
+    return wrapper
+
+
+def check_and_return_text(func):
+    def wrapper(*args, **kwargs):
+        response = func(*args, **kwargs)
+        response.raise_for_status()
+        return response.text
     return wrapper
 
 
@@ -51,6 +60,13 @@ def operation_status(operation_id):
     return get_operation(operation_id).get('status')
 
 
+def when_operation_status(operation_id, status):
+    wait(
+        predicate=lambda: operation_status(operation_id=operation_id) == status,
+        timeout_seconds=15, sleep_seconds=(1, 2, 4)
+    )
+
+
 # RESOURCES
 # # Disk
 @send_request_and_get_response
@@ -73,7 +89,7 @@ def put_resources(*args, **kwargs):
     return put_resources_response(*args, **kwargs)
 
 
-@check_and_return_json
+@check_and_return_text
 def delete_resources(*args, **kwargs):
     return delete_resources_response(*args, **kwargs)
 
@@ -86,6 +102,19 @@ def custom_upload_resource_response(method, **kwargs):
 
 get_upload_resource_response = partial(custom_upload_resource_response, method='get')
 post_upload_resource_response = partial(custom_upload_resource_response, method='post')
+
+
+@check_and_return_json
+def post_upload_resource(*args, **kwargs):
+    return post_upload_resource_response(*args, **kwargs)
+
+
+def upload_and_wait_status(status, *args, **kwargs):
+    json = post_upload_resource(*args, **kwargs)
+    href = json.get('href')
+    assert href
+    operation_id = href.split('/')[-1]
+    when_operation_status(operation_id=operation_id, status=status)
 
 
 # # Publish
