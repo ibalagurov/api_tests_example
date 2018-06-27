@@ -44,9 +44,22 @@ def test_uploaded_file_with_same_name_should_have_postfix(temp_folder):
     check.response_has_field_with_value(response, "name", 'same_name (1).txt')
 
 
+def test_file_uploading_should_increase_used_space(temp_folder):
+    file_path = f'{temp_folder}/used_space.txt'
+    link = f'{_TEST_DATA_URL}/test_txt.txt'
+
+    space_before = helper.get_disk_info().get('used_space')
+
+    helper.upload_and_wait_status(params=dict(path=file_path, url=link), status='success')
+
+    space_after = helper.get_disk_info().get('used_space')
+
+    assert space_after > space_before, "Used space wasn't changed after file uploading"
+
+
 def test_upload_file_to_nonexistent_folder():
     link = f'{_TEST_DATA_URL}/test_txt.txt'
-    file_path = f'unexistent_folder/existed_file.txt'
+    file_path = f'nonexistent_folder/existed_file.txt'
     response = helper.post_upload_resource_response(params=dict(path=file_path, url=link))
 
     check.response_has_status_code(response, 409)

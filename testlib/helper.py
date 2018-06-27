@@ -5,6 +5,7 @@ from waiting import wait
 from config.routing import BASE_URL
 
 
+# COMMON
 def check_and_return_json(func):
     def wrapper(*args, **kwargs):
         response = func(*args, **kwargs)
@@ -29,6 +30,7 @@ def send_request_and_get_response(func):
     return wrapper
 
 
+# ENDPOINTS
 DISK_URL = BASE_URL + '/disk'
 DISK_OPERATIONS_URL = BASE_URL + '/disk/operations'
 DISK_RESOURCES_URL = BASE_URL + '/disk/resources'
@@ -43,6 +45,11 @@ def custom_disk_response(method, **kwargs):
 
 
 get_disk_info_response = partial(custom_disk_response, method='get')
+
+
+@check_and_return_json
+def get_disk_info():
+    return get_disk_info_response()
 
 
 # OPERATIONS
