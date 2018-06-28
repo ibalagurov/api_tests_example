@@ -6,9 +6,12 @@ import config
 
 @lru_cache()
 def get(by_user):
+    if by_user not in ['authorized', 'unauthorized', 'non valid']:
+        raise ValueError(f'Undefined {by_user} user')
     session = Session()
-    if by_user == 'authorized':
-        session.headers.update(Authorization=f'OAuth {config.auth.TOKEN}')
+    token = {'authorized': config.auth.TOKEN, 'non valid': config.auth.NON_VALID_TOKEN}.get(by_user)
+    if token:
+        session.headers.update(Authorization=f'OAuth {token}')
     return session
 
 
@@ -17,13 +20,13 @@ def send_request(request, by_user):
     prepped = session.prepare_request(request)
     if config.test_run.DEBUG:
         url, method, headers, body = prepped.url, prepped.method, prepped.headers, prepped.body
-        print(f"\n\nsend request:\n url: {url}\n method: {method}\n headers: {headers}\n body: {body}".encode('utf-8'))
+        print(f"\n\nsend request:\n url: {url}\n method: {method}\n headers: {headers}\n body: {body}")
 
     response = session.send(request=prepped, timeout=config.test_run.API_TIMEOUT, verify=config.routing.VERIFY_SSL)
 
     if config.test_run.DEBUG:
         print(
-            f"get response:\n code: {response.status_code} {response.reason}\n content: {response.text}".encode('utf-8')
+            f"get response:\n code: {response.status_code} {response.reason}\n content: {response.text}"
         )
 
     return response

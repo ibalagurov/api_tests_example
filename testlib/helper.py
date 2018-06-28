@@ -96,6 +96,9 @@ def put_resources(*args, **kwargs):
     return put_resources_response(*args, **kwargs)
 
 
+create_folder = put_resources
+
+
 @check_and_return_text
 def delete_resources(*args, **kwargs):
     return delete_resources_response(*args, **kwargs)

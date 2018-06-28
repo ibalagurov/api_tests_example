@@ -1,5 +1,6 @@
 from . import (
     auth,
     routing,
-    test_run
+    test_run,
+    data
 )

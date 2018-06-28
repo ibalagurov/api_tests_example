@@ -1,19 +1,17 @@
 import pytest
+import config
 from testlib import helper
 from testlib import check
 
 
-_TEST_DATA_URL = 'https://github.com/ibalagurov/api_tests_example/blob/master/test_data'
-
-
 @pytest.mark.parametrize('file_name, link, mime_type', [
-    ('test_jpg.jpg', f'{_TEST_DATA_URL}/test_jpg.jpg', 'image/jpeg'),
-    ('test_txt.txt', f'{_TEST_DATA_URL}/test_txt.txt', 'text/plain'),
+    ('test_jpg.jpg', f'{config.data.TEST_DATA_URL}/test_jpg.jpg', 'image/jpeg'),
+    ('test_txt.txt', f'{config.data.TEST_DATA_URL}/test_txt.txt', 'text/plain'),
 ])
-def test_upload_file_with_type(temp_folder, file_name, link, mime_type):
+def test_upload_file_with_type(base_folder, file_name, link, mime_type):
     """ Temporary folder is created, upload in it image, operation should be successful, file should be available and
         have expected name and mime type """
-    file_path = f'{temp_folder}/{file_name}'
+    file_path = f'{base_folder}/{file_name}'
     response = helper.post_upload_resource_response(params=dict(path=file_path, url=link))
 
     check.response_has_status_code(response, 202)
@@ -29,9 +27,9 @@ def test_upload_file_with_type(temp_folder, file_name, link, mime_type):
     check.response_has_field_with_value(response, "name", file_name)
 
 
-def test_uploaded_file_with_same_name_should_have_postfix(temp_folder):
-    file_path = f'{temp_folder}/same_name.txt'
-    link = f'{_TEST_DATA_URL}/test_txt.txt'
+def test_uploaded_file_with_same_name_should_have_postfix(base_folder):
+    file_path = f'{base_folder}/same_name.txt'
+    link = f'{config.data.TEST_DATA_URL}/test_txt.txt'
     helper.upload_and_wait_status(params=dict(path=file_path, url=link), status='success')
     helper.upload_and_wait_status(params=dict(path=file_path, url=link), status='success')
 
@@ -39,14 +37,14 @@ def test_uploaded_file_with_same_name_should_have_postfix(temp_folder):
     check.response_has_status_code(response, 200)
     check.response_has_field_with_value(response, "name", 'same_name.txt')
 
-    response = helper.get_resources_response(params=dict(path=f'{temp_folder}/same_name (1).txt'))
+    response = helper.get_resources_response(params=dict(path=f'{base_folder}/same_name (1).txt'))
     check.response_has_status_code(response, 200)
     check.response_has_field_with_value(response, "name", 'same_name (1).txt')
 
 
-def test_file_uploading_should_increase_used_space(temp_folder):
-    file_path = f'{temp_folder}/used_space.txt'
-    link = f'{_TEST_DATA_URL}/test_txt.txt'
+def test_file_uploading_should_increase_used_space(base_folder):
+    file_path = f'{base_folder}/used_space.txt'
+    link = f'{config.data.TEST_DATA_URL}/test_txt.txt'
 
     space_before = helper.get_disk_info().get('used_space')
 
@@ -58,7 +56,7 @@ def test_file_uploading_should_increase_used_space(temp_folder):
 
 
 def test_upload_file_to_nonexistent_folder():
-    link = f'{_TEST_DATA_URL}/test_txt.txt'
+    link = f'{config.data.TEST_DATA_URL}/test_txt.txt'
     file_path = f'nonexistent_folder/existed_file.txt'
     response = helper.post_upload_resource_response(params=dict(path=file_path, url=link))
 
@@ -67,9 +65,9 @@ def test_upload_file_to_nonexistent_folder():
     check.response_does_not_have_fields(response, 'href')
 
 
-def test_upload_file_from_nonexistent_url(temp_folder):
-    link = f'{_TEST_DATA_URL}/nonexistent_url.txt'
-    file_path = f'{temp_folder}/from_nonexistent_url.txt'
+def test_upload_file_from_nonexistent_url(base_folder):
+    link = f'{config.data.TEST_DATA_URL}/nonexistent_url.txt'
+    file_path = f'{base_folder}/from_nonexistent_url.txt'
 
     helper.upload_and_wait_status(params=dict(path=file_path, url=link), status='failed')
 
@@ -77,18 +75,18 @@ def test_upload_file_from_nonexistent_url(temp_folder):
 @pytest.mark.parametrize('fields', [
     ['href'], ['href', 'method'], ['href', 'method', 'templated']
 ])
-def test_upload_file_and_get_existent_fields(temp_folder, fields):
-    link = f'{_TEST_DATA_URL}/test_txt.txt'
-    file_path = f'{temp_folder}/fields_test{fields}.txt'
+def test_upload_file_and_get_existent_fields(base_folder, fields):
+    link = f'{config.data.TEST_DATA_URL}/test_txt.txt'
+    file_path = f'{base_folder}/fields_test{fields}.txt'
     response = helper.post_upload_resource_response(params=dict(path=file_path, url=link, fields=','.join(fields)))
 
     check.response_has_status_code(response, 202)
     check.response_has_only_fields(response, *fields)
 
 
-def test_upload_file_by_unauthorized_user(temp_folder):
-    link = f'{_TEST_DATA_URL}/test_txt.txt'
-    file_path = f'{temp_folder}/unauthorized.txt'
+def test_upload_file_by_unauthorized_user(base_folder):
+    link = f'{config.data.TEST_DATA_URL}/test_txt.txt'
+    file_path = f'{base_folder}/unauthorized.txt'
     response = helper.post_upload_resource_response(params=dict(path=file_path, url=link), by_user='unauthorized')
 
     check.response_has_status_code(response, 401)
@@ -101,9 +99,9 @@ def test_upload_file_by_unauthorized_user(temp_folder):
     (None, 'valid'),
     ('valid', None)
 ])
-def test_upload_file_with_invalid_params(path, url, temp_folder):
-    link = None if url is None else f'{_TEST_DATA_URL}/test_txt.txt'
-    file_path = None if path is None else f'{temp_folder}/{url}{path}.txt'
+def test_upload_file_with_invalid_params(path, url, base_folder):
+    link = None if url is None else f'{config.data.TEST_DATA_URL}/test_txt.txt'
+    file_path = None if path is None else f'{base_folder}/{url}{path}.txt'
     response = helper.post_upload_resource_response(params=dict(path=file_path, url=link))
 
     check.response_has_status_code(response, 400)

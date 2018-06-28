@@ -18,6 +18,15 @@ def test_unauthorized_user_do_not_have_access_to_disk_info():
     )
 
 
+def test_non_valid_user_do_not_have_access_to_disk_info():
+    response = helper.get_disk_info_response(by_user='non valid')
+    check.response_has_status_code(response, 401)
+    check.response_has_field_with_value(response, field='error', value='UnauthorizedError')
+    check.response_does_not_have_fields(
+        response, 'system_folders', 'user', 'max_file_size', 'is_paid', 'used_space'
+    )
+
+
 @pytest.mark.parametrize('method', ['post', 'put', 'delete', 'patch'])
 def test_unexpected_methods_are_not_allowed(method):
     response = helper.custom_disk_response(method=method, by_user='authorized')
