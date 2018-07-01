@@ -5,14 +5,6 @@ from testlib import check
 
 
 @pytest.fixture(scope='module')
-def folder_with_two_files(temp_folder, temp_file):
-    folder_path, *_ = temp_folder()
-    file, *_ = temp_file(path=folder_path)
-    file_2, *_ = temp_file(path=folder_path)
-    return folder_path, file, file_2
-
-
-@pytest.fixture(scope='module')
 def module_file(temp_file):
     path, file_name = temp_file()
     return path, file_name
@@ -56,3 +48,40 @@ def test_publish_folder(module_folder):
 
     response = requests.get(url=items_by_name[0]['public_url'])
     assert response.status_code == 200, 'Unable to get published folder'
+
+
+def test_publish_file_by_unauthorized_user(module_file):
+    file_path, file_name, *_ = module_file
+
+    response = helper.put_publish_resource_response(params=dict(path=file_path), by_user='unauthorized')
+
+    check.response_has_status_code(response, 401)
+    check.response_has_only_fields(response, 'message', 'description', 'error')
+    check.response_has_field_with_value(response, field='error', value='UnauthorizedError')
+
+
+def test_publish_folder_by_expired_user(module_folder):
+    folder_path, folder_name, *_ = module_folder
+
+    response = helper.put_publish_resource_response(params=dict(path=folder_path), by_user='expired')
+
+    check.response_has_status_code(response, 401)
+    check.response_has_only_fields(response, 'message', 'description', 'error')
+    check.response_has_field_with_value(response, field='error', value='UnauthorizedError')
+
+
+def test_publish_nonexistent_file():
+    response = helper.put_publish_resource_response(params=dict(path='nonexistent_file'))
+
+    check.response_has_status_code(response, 404)
+    check.response_has_only_fields(response, 'message', 'description', 'error')
+    check.response_has_field_with_value(response, field='error', value='DiskNotFoundError')
+
+
+def test_publish_and_filter_fields(module_folder):
+    folder_path, folder_name, *_ = module_folder
+
+    response = helper.put_publish_resource_response(params=dict(path=folder_path, fields='href,method'))
+
+    check.response_has_status_code(response, 200)
+    check.response_has_only_fields(response, 'href', 'method')
