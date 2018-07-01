@@ -118,8 +118,8 @@ def delete_resources(*args, **kwargs):
     return delete_resources_response(*args, **kwargs)
 
 
-def safe_delete(path):
-    response = delete_resources_response(params={'path': path})
+def safe_delete(*args, **kwargs):
+    response = delete_resources_response(*args, **kwargs)
     code = response.status_code
     assert code in [202, 204, 404]  # 404 - means that parent folder was deleted
     if code == 202:
@@ -145,9 +145,7 @@ def post_upload_resource(*args, **kwargs):
 
 def upload_and_wait_status(status, *args, **kwargs):
     json = post_upload_resource(*args, **kwargs)
-    href = json.get('href')
-    assert href
-    operation_id = href.split('/')[-1]
+    operation_id = get_operation_id_from_json(json)
     when_operation_status(operation_id=operation_id, status=status)
 
 
@@ -177,3 +175,20 @@ get_public_resources_response = partial(custom_public_resource_response, method=
 @check_and_return_json
 def get_public_resources(*args, **kwargs):
     return get_public_resources_response(*args, **kwargs)
+
+
+# Trash
+DISK_TRASH_RESOURCES_URL = BASE_URL + '/disk/trash/resources'
+
+
+@send_request_and_get_response
+def custom_trash_resource_response(method, **kwargs):
+    return Request(method=method, url=DISK_TRASH_RESOURCES_URL, **kwargs)
+
+
+get_trash_resources_response = partial(custom_trash_resource_response, method='get')
+
+
+@check_and_return_json
+def get_trash_resources(*args, **kwargs):
+    return get_trash_resources_response(*args, **kwargs)

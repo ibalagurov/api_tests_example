@@ -33,7 +33,7 @@ def temp_folder(base_folder):
     yield wrapped
 
     for _path in folders_paths:
-        helper.safe_delete(_path)
+        helper.safe_delete(params={'path': _path})
 
 
 @pytest.fixture(scope='session')
@@ -54,4 +54,4 @@ def temp_file(base_folder):
     yield wrapped
 
     for _path in files_paths:
-        helper.safe_delete(_path)
+        helper.safe_delete(params={'path': _path})

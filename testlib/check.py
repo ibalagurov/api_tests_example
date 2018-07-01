@@ -1,10 +1,10 @@
 # matchers
 
 
-def response_has_status_code(response, status_code):
+def response_has_status_code(response, *status_codes):
     actual_status_code = response.status_code
-    assert status_code == actual_status_code, f'''
-        Expected response status code: {status_code}
+    assert actual_status_code in status_codes, f'''
+        Expected response status codes: {status_codes}
         Actual status code: {actual_status_code}
     '''
 
