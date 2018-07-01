@@ -33,7 +33,18 @@ def response_has_field_with_value(response, field, value):
     actual_field_value = response.json().get(field)
     assert actual_field_value, f'Response does not have expected {field} field'
     assert value == actual_field_value, f'''
-        Expected '{field}' field value:
+        Expected '{field}' field value don't equal to:
+        {value}
+        Actual '{field}' field value:
+        {actual_field_value}
+    '''
+
+
+def response_has_field_contains_value(response, field, value):
+    actual_field_value = response.json().get(field)
+    assert actual_field_value, f'Response does not have expected {field} field'
+    assert value in actual_field_value, f'''
+        Expected '{field}' field value doesn't contain:
         {value}
         Actual '{field}' field value:
         {actual_field_value}

@@ -43,7 +43,7 @@ def temp_file(base_folder):
     def wrapped(path=base_folder):
         name = f'{uuid.uuid4()}.txt'
         file_path = f'{path}/{name}'
-        link = f'{config.data.TEST_DATA_URL}/test_txt.txt'
+        link = config.data.TEST_DATA_URL['test_txt.txt']
         helper.upload_and_wait_status(params=dict(path=file_path, url=link), status='success')
         if path != base_folder:
             # storing files with custom paths (base folder with all resources will be deleted anyway)

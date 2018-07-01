@@ -47,6 +47,7 @@ def get_operation_id_from_json(json):
 DISK_URL = BASE_URL + '/disk'
 DISK_OPERATIONS_URL = BASE_URL + '/disk/operations'
 DISK_RESOURCES_URL = BASE_URL + '/disk/resources'
+DISK_PUBLIC_RESOURCES_URL = BASE_URL + '/disk/resources/public/'
 DISK_RESOURCE_UPLOAD_URL = BASE_URL + '/disk/resources/upload'
 DISK_RESOURCE_PUBLISH_URL = BASE_URL + '/disk/resources/publish'
 
@@ -154,3 +155,25 @@ def upload_and_wait_status(status, *args, **kwargs):
 @send_request_and_get_response
 def custom_publish_resource_response(method, **kwargs):
     return Request(method=method, url=DISK_RESOURCE_PUBLISH_URL, **kwargs)
+
+
+put_publish_resource_response = partial(custom_publish_resource_response, method='put')
+
+
+@check_and_return_json
+def put_publish_resource(*args, **kwargs):
+    return put_publish_resource_response(*args, **kwargs)
+
+
+# # Public
+@send_request_and_get_response
+def custom_public_resource_response(method, **kwargs):
+    return Request(method=method, url=DISK_PUBLIC_RESOURCES_URL, **kwargs)
+
+
+get_public_resources_response = partial(custom_public_resource_response, method='get')
+
+
+@check_and_return_json
+def get_public_resources(*args, **kwargs):
+    return get_public_resources_response(*args, **kwargs)
