@@ -25,8 +25,6 @@ def send_request(request, by_user):
     response = session.send(request=prepped, timeout=config.test_run.API_TIMEOUT, verify=config.routing.VERIFY_SSL)
 
     if config.test_run.DEBUG:
-        print(
-            f"get response:\n code: {response.status_code} {response.reason}\n content: {response.text}"
-        )
+        print(f"get response:\n code: {response.status_code} {response.reason}\n content: {response.text}")
 
     return response
