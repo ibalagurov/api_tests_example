@@ -30,6 +30,19 @@ def send_request_and_get_response(func):
     return wrapper
 
 
+def get_operation_id_from_response(response):
+    json = response.json()
+    operation_id = get_operation_id_from_json(json)
+    return operation_id
+
+
+def get_operation_id_from_json(json):
+    href = json.get('href')
+    assert href
+    operation_id = href.split('/')[-1]
+    return operation_id
+
+
 # ENDPOINTS
 DISK_URL = BASE_URL + '/disk'
 DISK_OPERATIONS_URL = BASE_URL + '/disk/operations'
@@ -70,7 +83,7 @@ def operation_status(operation_id):
 def when_operation_status(operation_id, status):
     wait(
         predicate=lambda: operation_status(operation_id=operation_id) == status,
-        timeout_seconds=15, sleep_seconds=(1, 2, 4)
+        timeout_seconds=30, sleep_seconds=(1, 2, 4)
     )
 
 
@@ -102,6 +115,16 @@ create_folder = put_resources
 @check_and_return_text
 def delete_resources(*args, **kwargs):
     return delete_resources_response(*args, **kwargs)
+
+
+def safe_delete(path):
+    response = delete_resources_response(params={'path': path})
+    code = response.status_code
+    assert code in [202, 204, 404]  # 404 - means that parent folder was deleted
+    if code == 202:
+        # for exclude resource blocking in async deleting nested resources
+        operation_id = get_operation_id_from_response(response)
+        when_operation_status(operation_id=operation_id, status='success')
 
 
 # # Upload

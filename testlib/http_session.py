@@ -6,10 +6,10 @@ import config
 
 @lru_cache()
 def get(by_user):
-    if by_user not in ['authorized', 'unauthorized', 'non valid']:
+    if by_user not in ['authorized', 'unauthorized', 'expired']:
         raise ValueError(f'Undefined {by_user} user')
     session = Session()
-    token = {'authorized': config.auth.TOKEN, 'non valid': config.auth.NON_VALID_TOKEN}.get(by_user)
+    token = {'authorized': config.auth.TOKEN, 'expired': config.auth.EXPIRED_TOKEN}.get(by_user)
     if token:
         session.headers.update(Authorization=f'OAuth {token}')
     return session

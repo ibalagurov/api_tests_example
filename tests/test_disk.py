@@ -18,8 +18,8 @@ def test_unauthorized_user_do_not_have_access_to_disk_info():
     )
 
 
-def test_non_valid_user_do_not_have_access_to_disk_info():
-    response = helper.get_disk_info_response(by_user='non valid')
+def test_expired_user_do_not_have_access_to_disk_info():
+    response = helper.get_disk_info_response(by_user='expired')
     check.response_has_status_code(response, 401)
     check.response_has_field_with_value(response, field='error', value='UnauthorizedError')
     check.response_does_not_have_fields(

@@ -61,8 +61,8 @@ def test_upload_file_to_nonexistent_folder():
     response = helper.post_upload_resource_response(params=dict(path=file_path, url=link))
 
     check.response_has_status_code(response, 409)
+    check.response_has_only_fields(response, 'message', 'description', 'error')
     check.response_has_field_with_value(response, field='error', value='DiskPathDoesntExistsError')
-    check.response_does_not_have_fields(response, 'href')
 
 
 def test_upload_file_from_nonexistent_url(base_folder):
@@ -90,7 +90,7 @@ def test_upload_file_by_unauthorized_user(base_folder):
     response = helper.post_upload_resource_response(params=dict(path=file_path, url=link), by_user='unauthorized')
 
     check.response_has_status_code(response, 401)
-    check.response_does_not_have_fields(response, 'href')
+    check.response_has_only_fields(response, 'message', 'description', 'error')
     check.response_has_field_with_value(response, field='error', value='UnauthorizedError')
 
 
@@ -105,7 +105,7 @@ def test_upload_file_with_invalid_params(path, url, base_folder):
     response = helper.post_upload_resource_response(params=dict(path=file_path, url=link))
 
     check.response_has_status_code(response, 400)
-    check.response_does_not_have_fields(response, 'href')
+    check.response_has_only_fields(response, 'message', 'description', 'error')
     check.response_has_field_with_value(response, field='error', value='FieldValidationError')
 
 
@@ -113,5 +113,5 @@ def test_upload_file_with_empty_params():
     response = helper.post_upload_resource_response()
 
     check.response_has_status_code(response, 400)
-    check.response_does_not_have_fields(response, 'href')
+    check.response_has_only_fields(response, 'message', 'description', 'error')
     check.response_has_field_with_value(response, field='error', value='FieldValidationError')
