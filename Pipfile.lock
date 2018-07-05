@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "93c1cd1766834dbf22da04f668489706f9bc62ab0899dbf49bc2d38b18fbfe21"
+            "sha256": "cad14a18081fe14d4d3d19bd867db0e67b51d29bbb0f9e5279af92064f9ab8a5"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,6 +16,21 @@
         ]
     },
     "default": {
+        "allure-pytest": {
+            "hashes": [
+                "sha256:9e294e595d2c0ce6e6cdb377348c73d0e244e35a73840037180709542325afe5",
+                "sha256:da2433c751c399e617cd40440e4510106d6611caeac22f246ef0e23ea371507a"
+            ],
+            "index": "pypi",
+            "version": "==2.4.1"
+        },
+        "allure-python-commons": {
+            "hashes": [
+                "sha256:aff6463ec528df72d8d84602bbed61f8129401c2737edbeb8c0e2533dbdb216e",
+                "sha256:cd72fc26a190f533f404c0a8f74a2f0ec4807ab82ca2501a9c218c0f29f107be"
+            ],
+            "version": "==2.4.1"
+        },
         "apipkg": {
             "hashes": [
                 "sha256:2e38399dbe842891fe85392601aab8f40a8f4cc5a9053c326de35a1cc0297ac6",
@@ -83,18 +98,18 @@
         },
         "py": {
             "hashes": [
-                "sha256:29c9fab495d7528e80ba1e343b958684f4ace687327e6f789a94bf3d1915f881",
-                "sha256:983f77f3331356039fdd792e9220b7b8ee1aa6bd2b25f567a963ff1de5a64f6a"
+                "sha256:3fd59af7435864e1a243790d322d763925431213b6b8529c6ca71081ace3bbf7",
+                "sha256:e31fb2767eb657cbde86c454f02e99cb846d3cd9d61b318525140214fdc0e98e"
             ],
-            "version": "==1.5.3"
+            "version": "==1.5.4"
         },
         "pytest": {
             "hashes": [
-                "sha256:26838b2bc58620e01675485491504c3aa7ee0faf335c37fcd5f8731ca4319591",
-                "sha256:32c49a69566aa7c333188149ad48b58ac11a426d5352ea3d8f6ce843f88199cb"
+                "sha256:8ea01fc4fcc8e1b1e305252b4bc80a1528019ab99fd3b88666c9dc38d754406c",
+                "sha256:90898786b3d0b880b47645bae7b51aa9bbf1e9d1e4510c2cfd15dd65c70ea0cd"
             ],
             "index": "pypi",
-            "version": "==3.6.1"
+            "version": "==3.6.2"
         },
         "pytest-forked": {
             "hashes": [

@@ -1,3 +1,4 @@
+import allure
 from requests import Request
 from functools import partial
 from . import http_session
@@ -25,8 +26,9 @@ def check_and_return_text(func):
 def send_request_and_get_response(func):
     def wrapper(by_user='authorized', *args, **kwargs):
         request = func(*args, **kwargs)
-        response = http_session.send_request(request=request, by_user=by_user)
-        return response
+        with allure.step(f"Send {request.method} request by {by_user} user to url:\n {request.url}"):
+            response = http_session.send_request(request=request, by_user=by_user)
+            return response
     return wrapper
 
 

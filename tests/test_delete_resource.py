@@ -5,11 +5,10 @@ from testlib import check
 
 
 @pytest.fixture
-def folder_with_two_files(temp_folder, temp_file):
+def folder_with_file(temp_folder, temp_file):
     folder_path, folder_name, *_ = temp_folder()
     file, *_ = temp_file(path=folder_path)
-    file_2, *_ = temp_file(path=folder_path)
-    return folder_path, folder_name, file, file_2
+    return folder_path, folder_name, file
 
 
 @pytest.fixture
@@ -58,8 +57,8 @@ def test_delete_folder(temp_folder):
     assert file_in_trash['name'] == folder_name, 'Unable to find deleted folder in trash'
 
 
-def test_delete_folder_with_files(folder_with_two_files):
-    path, folder_name, *_ = folder_with_two_files
+def test_delete_folder_with_files(folder_with_file):
+    path, folder_name, *_ = folder_with_file
 
     response = helper.delete_resources_response(params=dict(path=path))
 

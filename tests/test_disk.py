@@ -1,8 +1,10 @@
 import pytest
+import allure
 from testlib import check
 from testlib import helper as helper
 
 
+@allure.story("Authorized user can get disk information")
 def test_get_disk_info():
     response = helper.get_disk_info_response()
     check.response_has_status_code(response, 200)
