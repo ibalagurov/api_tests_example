@@ -3,8 +3,8 @@
 .pytest_cache/
 
 # Allure reporting
-allure_report/*
-allure_results/*
+allure-report/*
+allure-results/*
 
 # Pycharm
 .idea/*
