@@ -36,6 +36,6 @@ def send_request(request, by_user):
     response_info = f"get response:\n code: {response.status_code} {response.reason}\n content: {response.text}"
     allure.attach(response_info)
     if config.test_run.DEBUG:
-        print(request_info)
+        print(response_info)
 
     return response
