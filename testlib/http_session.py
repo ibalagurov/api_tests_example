@@ -1,6 +1,7 @@
 import allure
 from functools import lru_cache
 from requests import Session
+from requests import Request
 
 import config
 
@@ -14,6 +15,11 @@ def get(by_user):
     if token:
         session.headers.update(Authorization=f'OAuth {token}')
     return session
+
+
+def send_custom_request(by_user, *args, **kwargs):
+    request = Request(*args, **kwargs)
+    return send_request(request=request, by_user=by_user)
 
 
 def send_request(request, by_user):

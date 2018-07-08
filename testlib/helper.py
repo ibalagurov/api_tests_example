@@ -84,10 +84,11 @@ def operation_status(operation_id):
 
 
 def when_operation_status(operation_id, status):
-    wait(
-        predicate=lambda: operation_status(operation_id=operation_id) == status,
-        timeout_seconds=30, sleep_seconds=(1, 2, 4)
-    )
+    with allure.step(f"Waiting when asynchronous operation with {operation_id} id will have {status} status"):
+        wait(
+            predicate=lambda: operation_status(operation_id=operation_id) == status,
+            timeout_seconds=30, sleep_seconds=(1, 2, 4)
+        )
 
 
 # RESOURCES
