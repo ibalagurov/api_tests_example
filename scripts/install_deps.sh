@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 pip3 install pipenv
 
 # there is an issue https://github.com/pypa/pipenv/issues/2092
