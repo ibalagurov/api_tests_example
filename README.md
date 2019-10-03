@@ -2,7 +2,7 @@
 Used packages: Requests + Pytest + Allure2
 
 ## Requirements:
-1. Python 3.6
+1. Python 3.7.3
 2. [Allure2 report generator](https://github.com/allure-framework/allure2#download) (add allure to PATH variables)
 
 ## Setup and Run:
